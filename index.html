@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.5/dist/mindar-image.prod.js"></script>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.5/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      #start-button {
+        position: fixed; top: 20px; left: 20px; z-index: 999;
+        padding: 15px 30px; background: #007bff; color: white;
+        border: none; border-radius: 5px; font-weight: bold; cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="start-button">CLICCA QUI PER ATTIVARE</button>
+
+    <a-scene mindar-image="imageTargetSrc: ./targets.mind;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+      <a-assets>
+        <video id="vid" src="./video.mp4" loop="true" crossorigin="anonymous" playsinline></video>
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-video src="#vid" position="0 0 0" height="1" width="1" rotation="0 0 0"></a-video>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      const startButton = document.querySelector("#start-button");
+      const video = document.querySelector("#vid");
+
+      startButton.addEventListener('click', () => {
+        video.play();
+        video.pause(); // Pre-caricamento
+        startButton.style.display = "none"; // Nasconde il tasto dopo il clic
+      });
+
+      // Quando l'immagine viene inquadrata, il video parte
+      const targetEntity = document.querySelector('[mindar-image-target]');
+      targetEntity.addEventListener("targetFound", event => {
+        video.play();
+      });
+
+      targetEntity.addEventListener("targetLose", event => {
+        video.pause();
+      });
+    </script>
+  </body>
+</html>
